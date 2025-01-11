@@ -1,0 +1,21 @@
+PATCH http://localhost:3000/posts
+Content-Type: application/json
+
+{
+  "id": 1234,
+  "title": "Hello, World!",
+  "postType": "post",
+  "slug": "hello-world",
+  "status": "draft",
+  "content": "This is my first post.",
+  "schema": "{\n  \"context\": \"https://schema.org\",\n  \"type\": \"person\"\n}",
+  "featuredImageUrl": "http://localhost.com/image1",
+  "publishOn": "2025-12-31T23:59:59",
+  "tags": ["hello", "world"],
+  "metaOptions": [
+    {
+        "key": "hello-world",
+        "value": "Hello, World!"
+    }
+  ]
+}

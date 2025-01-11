@@ -2,6 +2,9 @@ import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { GetUsersParamDto } from "../dtos/get-users-params.dto";
 import { AuthService } from "src/auth/providers/auth.service";
 
+/**
+ * Class to connect to users table and perform business operations
+ */
 @Injectable()
 export class UserService {
 
@@ -10,6 +13,9 @@ export class UserService {
         private readonly authService: AuthService
     ) { }
 
+    /**
+     * The method to get all users from the database
+     */
     public findAll(
         getUsersParamDto: GetUsersParamDto,
         limit: number,
@@ -33,6 +39,9 @@ export class UserService {
         ]
     }
 
+    /**
+     * Find a user by id
+     */
     public findOneById(
         id: string
     ) {
