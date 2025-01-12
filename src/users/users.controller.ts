@@ -54,7 +54,7 @@ export class UsersController {
         console.log(user);
         // console.log(headers);
         // console.log(ip);
-        return 'You sent a post request to users endpoint';
+        return this.usersService.createUser(user);
     }
 
     // @Post()

@@ -2,19 +2,17 @@ POST http://localhost:3000/posts
 Content-Type: application/json
 
 {
-  "title": "Hello, World!",
+  "title": "What's new with NestJS",
   "postType": "post",
-  "slug": "hello-world",
+  "slug": "new-with-nestjs6",
   "status": "draft",
-  "content": "This is my first post.",
-  "schema": "{\n  \"context\": \"https://schema.org\",\n  \"type\": \"person\"\n}",
-  "featuredImageUrl": "http://localhost.com/image1",
-  "publishOn": "2025-12-31T23:59:59",
-  "tags": ["hello", "world"],
-  "metaOptions": [
-    {
-        "key": "hello-world",
-        "value": "Hello, World!"
-    }
-  ]
+  "content": "test content",
+  "schema": "{\r\n \"@context\": \"https:\/\/schema.org\",\r\n \"@type\": \"Person\"\r\n }",
+  "featuredImageUrl": "http://localhost.com/images/image1.jpg",
+  "publishOn": "2024-03-16T07:46:32+0000",
+  //"tags": ["nestjs", "typescript"],
+  "metaOptions" : {
+    "metaValue": "{ \"sidebarEnabled\": true, \"footerActive\": true }"
+  },
+  "authorId": 1
 }

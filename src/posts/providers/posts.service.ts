@@ -1,33 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from 'src/users/providers/users-service';
-import { CreatePostDto } from '../dto/create-post.dto';
+import { CreatePostDto } from '../dtos/create-post.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Post } from '../post.entity';
+import { Repository } from 'typeorm';
+import { MetaOption } from 'src/meta-options/meta-option.entity';
 
 @Injectable()
 export class PostsService {
 
     constructor(
+        @InjectRepository(Post)
+        private readonly postsRepository: Repository<Post>,
+
+        @InjectRepository(MetaOption)
+        private readonly metaOptionsRepository: Repository<MetaOption>,
+
         private readonly usersService: UserService,
     ) { }
 
-    public createPost(post: CreatePostDto) {
+    public async createPost(post: CreatePostDto) {
 
-        return post;
+        const author = await this.usersService.findOneById(post.authorId);
+        const createdPost = this.postsRepository.create({
+            ...post,
+            author: author
+        });
+
+        return await this.postsRepository.save(createdPost);
     }
 
-    public findAll(userId: string) {
+    public async findAll() {
+        const posts = await this.postsRepository.find();
+        // const posts = await this.postsRepository.find({
+        //     relations: ["metaOptions", "author"]
+        // });
+        return posts;
+    }
 
-        const user = this.usersService.findOneById(userId);
-        return [
-            {
-                user,
-                title: 'Post 1',
-                content: 'This is post 1'
-            },
-            {
-                user,
-                title: 'Post 2',
-                content: 'This is post 2'
-            },
-        ];
+    public async delete(id: number) {
+        await this.postsRepository.delete(id);
+        return { deleted: true };
     }
 }
