@@ -38,7 +38,7 @@ export class PostsController {
     })
     @Patch()
     public updatePost(@Body() data: PatchPostDto) {
-        console.log(data)
+    return this.postsService.update(data);
     }
 
     @ApiOperation({
