@@ -48,8 +48,8 @@ export class UserService {
         page: number
     ) {
 
-        const envTest = this.configService.get<string>("S3_BUCKET_NAME");
-        console.log(envTest);
+        // const envTest = this.configService.get<string>("S3_BUCKET_NAME");
+        // console.log(envTest);
 
         const isAuth = this.authService.isAuthenticated();
         console.log(isAuth);
