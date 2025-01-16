@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, RequestTimeoutException } from '@nestjs/common';
 import { UserService } from 'src/users/providers/users-service';
 import { CreatePostDto } from '../dtos/create-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,8 +44,28 @@ export class PostsService {
     }
 
     public async update(data: PatchPostDto) {
-        const tags = await this.tagsService.findMultipleTags(data.tags);
-        const post = await this.postsRepository.findOneBy({ id: data.id });
+        let tags = undefined;
+        try {
+            tags = await this.tagsService.findMultipleTags(data.tags);
+        } catch (error) {
+            throw new RequestTimeoutException("Unable to process your request at the moment please try later.", {
+                description: "Error connecting to the database"
+            })
+        }
+
+        if (!tags) throw new NotFoundException("Tags not found");
+        if (tags.length !== data.tags.length) throw new NotFoundException("Some tags weren't found");
+
+        let post = undefined;
+        try {
+            post = await this.postsRepository.findOneBy({ id: data.id });
+        } catch (error) {
+            throw new RequestTimeoutException("Unable to process your request at the moment please try later.", {
+                description: "Error connecting to the database"
+            })
+        }
+
+        if (!post) throw new NotFoundException("Posts not found");
 
         post.title = data.title ?? post.title;
         post.content = data.content ?? post.content;
@@ -56,7 +76,15 @@ export class PostsService {
         post.publishOn = data.publishOn ?? post.publishOn;
         post.tags = tags;
 
-        return await this.postsRepository.save(post);
+        try {
+            await this.postsRepository.save(post);
+        } catch (error) {
+            throw new RequestTimeoutException("Unable to process your request at the moment please try later.", {
+                description: "Error connecting to the database"
+            })
+        }
+
+        return post;
     }
 
     public async delete(id: number) {

@@ -51,7 +51,6 @@ export class UsersController {
         // @Headers() headers: any,
         // @Ip() ip: any
     ) {
-        console.log(user);
         // console.log(headers);
         // console.log(ip);
         return this.usersService.createUser(user);
