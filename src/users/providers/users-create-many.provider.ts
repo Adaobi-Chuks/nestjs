@@ -48,8 +48,6 @@ export class UsersCreateManyProvider {
                 })
             }
         }
-
         return newUsers;
     }
-
 }
