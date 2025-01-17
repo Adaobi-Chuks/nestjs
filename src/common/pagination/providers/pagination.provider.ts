@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PaginationQueryDto } from '../dto/pagination-query.dto';
+import { PaginationQueryDto } from '../dtos/pagination-query.dto';
 import { ObjectLiteral, Repository } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';

@@ -9,6 +9,7 @@ import { ConfigService, ConfigType } from "@nestjs/config";
 import profileConfig from "../config/profile.config";
 import { UsersCreateManyProvider } from "./users-create-many.provider";
 import { CreateManyUserDto } from "../dtos/create-many-users.dto";
+import { FindOneUserByEmailProvider } from "./find-one-user-by-email.provider";
 
 /**
  * Class to connect to users table and perform business operations
@@ -30,36 +31,10 @@ export class UserService {
 
         private readonly dataSource: DataSource,
 
-        private readonly userCreateMnayProvider: UsersCreateManyProvider
+        private readonly userCreateMnayProvider: UsersCreateManyProvider,
+
+        private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider
     ) { }
-
-    public async createUser(user: CreateUserDto) {
-        let existingUser = undefined;
-
-        try {
-            existingUser = await this.userRepository.findOne({
-                where: {
-                    email: user.email
-                }
-            });
-        } catch (error) {
-            throw new RequestTimeoutException("Unable to process your request at the moment please try later.", {
-                description: "Error connecting to the database"
-            })
-        }
-
-        if (existingUser) throw new BadRequestException("User already exists.");
-
-        let newUser = this.userRepository.create(user);
-        try {
-            newUser = await this.userRepository.save(newUser);
-        } catch (error) {
-            throw new RequestTimeoutException("Unable to process your request at the moment please try later.", {
-                description: "Error connecting to the database"
-            })
-        }
-        return newUser;
-    }
 
     /**
      * The method to get all users from the database
@@ -120,6 +95,15 @@ export class UserService {
         }
         if (!user) throw new NotFoundException("User not found");
         return user;
+    }
+
+    /**
+     * Find a user by email
+     */
+    public async findOneByEmail(
+        email: string
+    ) {
+        return await this.findOneUserByEmailProvider.findOneByEmail(email);
     }
 
     public async createMany(
