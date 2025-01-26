@@ -1,5 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Get, Headers, Ip, Param, ParseIntPipe, Patch, Post, Query, Req, SetMetadata, UseGuards, ValidationPipe } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, ClassSerializerInterceptor, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { PatchUserDto } from './dtos/patch-user.dto';
 import { UserService } from './providers/users-service';
@@ -7,7 +6,6 @@ import { GetUsersParamDto } from './dtos/get-users-params.dto';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateManyUserDto } from './dtos/create-many-users.dto';
 import { CreateUserProvider } from './providers/create-user.provider';
-import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
 
@@ -52,31 +50,20 @@ export class UsersController {
     }
 
     @Post()
-    // @SetMetadata("authType", "none")
+    @UseInterceptors(ClassSerializerInterceptor)
     @Auth(AuthType.None)
     public createUsers(
         @Body() user: CreateUserDto,
-        // @Headers() headers: any,
-        // @Ip() ip: any
     ) {
-        // console.log(headers);
-        // console.log(ip);
         return this.createUserProvider.createUser(user);
     }
 
-    // @UseGuards(AccessTokenGuard)
     @Post("create-many")
     public createManyUsers(
         @Body() users: CreateManyUserDto
     ) {
         return this.usersService.createMany(users);
     }
-
-    // @Post()
-    // public createUsers(@Req() request: Request) {
-    //     console.log(request);
-    //     return 'You sent a post request to users endpoint';
-    // }
 
     @Patch()
     public patchUser(
