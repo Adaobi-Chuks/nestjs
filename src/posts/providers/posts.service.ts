@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, RequestTimeoutException } from '@nestjs/common';
+import { Injectable, NotFoundException, RequestTimeoutException } from '@nestjs/common';
 import { UserService } from 'src/users/providers/users-service';
 import { CreatePostDto } from '../dtos/create-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +10,8 @@ import { PatchPostDto } from '../dtos/patch-post.dto';
 import { GetPostsDto } from '../dtos/get-posts.dto';
 import { PaginationProvider } from 'src/common/pagination/providers/pagination.provider';
 import { Paginated } from 'src/common/pagination/interfaces/paginated.interface';
+import { CreatePostProvider } from './create-post.provider';
+import { IActiveUser } from 'src/auth/interfaces/active-user.interface';
 
 @Injectable()
 export class PostsService {
@@ -25,19 +27,11 @@ export class PostsService {
 
         private readonly usersService: UserService,
         private readonly tagsService: TagsService,
+        private readonly createPostProvider: CreatePostProvider
     ) { }
 
-    public async createPost(post: CreatePostDto) {
-
-        const author = await this.usersService.findOneById(post.authorId);
-        const tags = await this.tagsService.findMultipleTags(post.tags);
-        const createdPost = this.postsRepository.create({
-            ...post,
-            author: author,
-            tags: tags
-        });
-
-        return await this.postsRepository.save(createdPost);
+    public async createPost(post: CreatePostDto, user: IActiveUser) {
+        return await this.createPostProvider.createPost(post, user);
     }
 
     public async findAll(postQuery: GetPostsDto, userId: string): Promise<Paginated<Post>> {
