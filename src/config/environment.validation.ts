@@ -23,5 +23,9 @@ export default Joi.object({
     CLOUDFRONT_DISTRIBUTION_URL: Joi.string().required(),
     AWS_ACCESS_KEY_ID: Joi.string().required(),
     AWS_SECRET_ACCESS_KEY: Joi.string().required(),
-    AWS_REGION: Joi.string().required()
+    AWS_REGION: Joi.string().required(),
+    MAIL_HOST: Joi.string().required(),
+    SMTP_USERNAME: Joi.string().required(),
+    SMTP_PASSWORD: Joi.string().required(),
+    MAIL_PORT: Joi.string().required()
 });

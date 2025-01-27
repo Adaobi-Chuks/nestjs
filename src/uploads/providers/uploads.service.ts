@@ -35,7 +35,6 @@ export class UploadsService {
                 mime: file.mimetype,
                 size: file.size
             };
-            console.log(uploadFile)
 
             const upload = this.uploadRepository.create(uploadFile);
 
