@@ -18,6 +18,7 @@ import jwtConfig from './auth/config/jwt.config';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthenticationGuard } from './auth/guards/authentication/authentication.guard';
 import { DataResponseInterceptor } from './common/interceptors/data-response/data-response.interceptor';
+import { UploadsModule } from './uploads/uploads.module';
 
 const ENV = process.env.NODE_ENV;
 
@@ -47,11 +48,12 @@ const ENV = process.env.NODE_ENV;
         database: configService.get("database.name")
       })
     }),
+    ConfigModule.forFeature(jwtConfig),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
     TagsModule,
     MetaOptionsModule,
     PaginationModule,
-    ConfigModule.forFeature(jwtConfig),
-    JwtModule.registerAsync(jwtConfig.asProvider())
+    UploadsModule
   ],
   controllers: [AppController],
   providers: [
