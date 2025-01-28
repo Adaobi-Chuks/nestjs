@@ -1,46 +1,35 @@
-/*
- * Swagger Specific Imports
- */
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import { AppModule } from './app.module';
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
-  /*
-   * Use validation pipes globally
-   */
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-    }),
-  );
 
-  /*
-   * Install Swagger
-   * npm i @nestjs/swagger@7.3.0
-   */
+  // Apply validation pipe to application
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true
+  }));
 
-  // Create the swagger configuration
+  // Swagger Configuration
   const config = new DocumentBuilder()
-    .setTitle('NestJS Masterclass - Blog app API')
-    .setDescription('Use the base API URL as http://localhost:3000')
-    .setTermsOfService('http://localhost:3000/terms-of-service')
+    .setTitle("Blog API Documentation")
+    .setDescription("Use this documentation to understand how to interact with the API. Use the base API URL as http://localhost:3000")
+    .setTermsOfService("http://localhost:3000/terms-of-service")
     .setLicense(
-      'MIT License',
-      'https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt',
-    )
-    .addServer('http://localhost:3000/')
-    .setVersion('1.0')
+      "MIT License",
+      "http://www.opensource.org/licenses/mit-license.html")
+    .setVersion("1.0")
+    .addServer("http://localhost:3000")
     .build();
-  // Instantiate Swagger
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

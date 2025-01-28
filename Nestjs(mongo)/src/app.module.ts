@@ -1,22 +1,13 @@
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { PostsModule } from './posts/posts.module';
+import { AppController } from './app/app.controller';
+import { AppService } from './app/app.service';
 import { UsersModule } from './users/users.module';
+import { PostsModule } from './posts/posts.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [
-    UsersModule,
-    PostsModule,
-    AuthModule,
-    MongooseModule.forRoot(
-      'mongodb+srv://nestjs:4kRbli2h2k5F50tb@nestjs.dgq4bvd.mongodb.net/?retryWrites=true&w=majority&appName=nestjs',
-      { dbName: 'nestjs-blog' },
-    ),
-  ],
+  imports: [UsersModule, PostsModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
-export class AppModule {}
+export class AppModule { }
