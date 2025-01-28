@@ -1,18 +1,16 @@
-import { BadRequestException, forwardRef, HttpException, HttpStatus, Inject, Injectable, NotFoundException, RequestTimeoutException } from "@nestjs/common";
+import { HttpException, HttpStatus, Inject, Injectable, NotFoundException, RequestTimeoutException } from "@nestjs/common";
 import { GetUsersParamDto } from "../dtos/get-users-params.dto";
-import { AuthService } from "src/auth/providers/auth.service";
-import { DataSource, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { User } from "../user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CreateUserDto } from "../dtos/create-user.dto";
-import { ConfigService, ConfigType } from "@nestjs/config";
-import profileConfig from "../config/profile.config";
 import { UsersCreateManyProvider } from "./users-create-many.provider";
 import { CreateManyUserDto } from "../dtos/create-many-users.dto";
 import { FindOneUserByEmailProvider } from "./find-one-user-by-email.provider";
 import { FindOneByGoogleIdProvider } from "./find-one-by-google-id.provider";
 import { CreateGoogleUserProvider } from "./create-google-user.provider";
 import { IGoogleUser } from "../interfaces/google-user.interface";
+import { CreateUserDto } from "../dtos/create-user.dto";
+import { CreateUserProvider } from "./create-user.provider";
 
 /**
  * Class to connect to users table and perform business operations
@@ -24,23 +22,15 @@ export class UserService {
         @InjectRepository(User)
         private userRepository: Repository<User>,
 
-        @Inject(forwardRef(() => AuthService))
-        private readonly authService: AuthService,
-
-        // private readonly configService: ConfigService
-
-        @Inject(profileConfig.KEY)
-        private readonly profileConfiguration: ConfigType<typeof profileConfig>,
-
-        private readonly dataSource: DataSource,
-
         private readonly userCreateMnayProvider: UsersCreateManyProvider,
 
         private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider,
 
         private readonly findOneByGoogleIdProvider: FindOneByGoogleIdProvider,
 
-        private readonly createGoogleUserProvider: CreateGoogleUserProvider
+        private readonly createGoogleUserProvider: CreateGoogleUserProvider,
+
+        private readonly createUserProvider: CreateUserProvider
     ) { }
 
     /**
@@ -51,25 +41,6 @@ export class UserService {
         limit: number,
         page: number
     ) {
-
-        // const envTest = this.configService.get<string>("S3_BUCKET_NAME");
-        // console.log(envTest);
-
-        // const isAuth = this.authService.isAuthenticated();
-        // console.log(this.profileConfiguration);
-
-        // return [
-        //     {
-        //         "firstName": "John",
-        //         "lastName": "Doe",
-        //         "email": "johndoe@example.com"
-        //     },
-        //     {
-        //         "firstName": "Jane",
-        //         "lastName": "Doe",
-        //         "email": "janedoe@example.com"
-        //     }
-        // ]
 
         throw new HttpException(
             {
@@ -111,6 +82,12 @@ export class UserService {
         email: string
     ) {
         return await this.findOneUserByEmailProvider.findOneByEmail(email);
+    }
+
+    public async createUser(
+        data: CreateUserDto
+    ) {
+        return await this.createUserProvider.createUser(data);
     }
 
     public async createMany(

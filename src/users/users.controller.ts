@@ -5,7 +5,6 @@ import { UserService } from './providers/users-service';
 import { GetUsersParamDto } from './dtos/get-users-params.dto';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateManyUserDto } from './dtos/create-many-users.dto';
-import { CreateUserProvider } from './providers/create-user.provider';
 import { Auth } from 'src/auth/decorator/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
 
@@ -14,8 +13,7 @@ import { AuthType } from 'src/auth/enums/auth-type.enum';
 export class UsersController {
 
     constructor(
-        private readonly usersService: UserService,
-        private readonly createUserProvider: CreateUserProvider
+        private readonly usersService: UserService
     ){}
 
     @Get("/:id?")
@@ -55,7 +53,7 @@ export class UsersController {
     public createUsers(
         @Body() user: CreateUserDto,
     ) {
-        return this.createUserProvider.createUser(user);
+        return this.usersService.createUser(user);
     }
 
     @Post("create-many")

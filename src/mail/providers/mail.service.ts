@@ -9,7 +9,6 @@ export class MailService {
     ) {}
 
     public async sendUserWelcome(user: User) {
-        console.log(user.firstName)
         await this.mailerService.sendMail({
             to: user.email,
             from: `Onboarding Team <support@nestjsblog.com>`,

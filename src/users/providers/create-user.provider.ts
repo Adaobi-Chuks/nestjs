@@ -48,7 +48,6 @@ export class CreateUserProvider {
             })
         }
 
-        console.log(newUser)
         try {
             await this.mailService.sendUserWelcome(newUser);
         } catch (error) {
