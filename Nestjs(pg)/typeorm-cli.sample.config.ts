@@ -7,6 +7,6 @@ export default new DataSource({
     username: "something",
     password: "something",
     database: "nestjs_blog_api",
-    entities: ["**/*.entity.ts"],
+    entities: ["**/*.entity.js"],
     migrations: ["migrations/*.js"]
 });
