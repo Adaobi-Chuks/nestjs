@@ -13,7 +13,7 @@ import { TagsModule } from './tags/tags.module';
     PostsModule,
     AuthModule,
     MongooseModule.forRoot(
-      "mongodb+srv://ada:vaultpassword@vault.ekd9b2u.mongodb.net",
+      "",
       { dbName: "NestJsBlogAPI" }
     ),
     TagsModule
