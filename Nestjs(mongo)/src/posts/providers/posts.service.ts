@@ -1,33 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from 'src/users/providers/users-service';
 import { CreatePostDto } from '../dto/create-post.dto';
+import { Model } from 'mongoose';
+import { Post } from '../post.schema';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class PostsService {
 
     constructor(
+        @InjectModel(Post.name)
+        private readonly postModel: Model<Post>,
+
         private readonly usersService: UserService,
     ) { }
 
-    public createPost(post: CreatePostDto) {
-
-        return post;
+    public async createPost(post: CreatePostDto) {
+        const newPost = new this.postModel(post);
+        return await newPost.save();
     }
 
-    public findAll(userId: string) {
-
-        const user = this.usersService.findOneById(userId);
-        return [
-            {
-                user,
-                title: 'Post 1',
-                content: 'This is post 1'
-            },
-            {
-                user,
-                title: 'Post 2',
-                content: 'This is post 2'
-            },
-        ];
+    public async findAll() {
+        return await this.postModel
+            .find()
+            .populate("tags author")
+            .exec();
     }
 }

@@ -1,6 +1,10 @@
 import { forwardRef, Inject, Injectable } from "@nestjs/common";
 import { GetUsersParamDto } from "../dtos/get-users-params.dto";
 import { AuthService } from "src/auth/providers/auth.service";
+import { Model } from "mongoose";
+import { User } from "../user.schema";
+import { InjectModel } from "@nestjs/mongoose";
+import { CreateUserDto } from "../dtos/create-user.dto";
 
 /**
  * Class to connect to users table and perform business operations
@@ -9,9 +13,18 @@ import { AuthService } from "src/auth/providers/auth.service";
 export class UserService {
 
     constructor(
+        @InjectModel(User.name)
+        private readonly userModel: Model<User>,
+
         @Inject(forwardRef(() => AuthService))
         private readonly authService: AuthService
+
     ) { }
+
+    public async createUser(createUserDto: CreateUserDto) {
+        const newUser = new this.userModel(createUserDto);
+        return await newUser.save();
+    }
 
     /**
      * The method to get all users from the database

@@ -12,9 +12,9 @@ export class PostsController {
         private readonly postsService: PostsService,
     ) { }
 
-    @Get("/:userId?")
-    public getPosts(@Param("userId") userId: string) {
-        return this.postsService.findAll(userId);
+    @Get()
+    public getPosts() {
+        return this.postsService.findAll();
     }
 
     @ApiOperation({
